@@ -16,7 +16,7 @@ class WebFormRequest extends FormRequest
         $request = Request::instance();
         $data = $this->all();
         if ($request->isMethod('put') && empty($data['id']) && isset($request->id)) {
-            $data['id'] = (int) $request->id;
+            $data['id'] = (string) $request->id;
             $this->getInputSource()->replace($data);
         }
 
@@ -49,7 +49,7 @@ class WebFormRequest extends FormRequest
     {
         $rules = [
             'morph_type'  => 'required|string',
-            'morph_id'    => 'required|integer|min:1',
+            'morph_id'    => 'required|string',
             'type'        => 'required|string|max:15',
             'serial'      => '',
             'target'      => 'required|string|max:10',
@@ -63,9 +63,9 @@ class WebFormRequest extends FormRequest
 
         $request = Request::instance();
         if ($request->isMethod('put') && isset($request->id)) {
-            $rules = array_merge($rules, ['id' => ['required','integer','min:1','exists:'.config('wk-core.table.morph-web.webs').',id']]);
+            $rules = array_merge($rules, ['id' => ['required','string','exists:'.config('wk-core.table.morph-web.webs').',id']]);
         } elseif ($request->isMethod('post')) {
-            $rules = array_merge($rules, ['id' => ['nullable','integer','min:1','exists:'.config('wk-core.table.morph-web.webs').',id']]);
+            $rules = array_merge($rules, ['id' => ['nullable','string','exists:'.config('wk-core.table.morph-web.webs').',id']]);
         }
 
         return $rules;
@@ -80,14 +80,12 @@ class WebFormRequest extends FormRequest
     {
         return [
             'id.required'         => trans('php-core::validation.required'),
-            'id.integer'          => trans('php-core::validation.integer'),
-            'id.min'              => trans('php-core::validation.min'),
+            'id.string'           => trans('php-core::validation.string'),
             'id.exists'           => trans('php-core::validation.exists'),
             'morph_type.required' => trans('php-core::validation.required'),
             'morph_type.string'   => trans('php-core::validation.string'),
             'morph_id.required'   => trans('php-core::validation.required'),
-            'morph_id.integer'    => trans('php-core::validation.integer'),
-            'morph_id.min'        => trans('php-core::validation.min'),
+            'morph_id.string'     => trans('php-core::validation.string'),
             'type.required'       => trans('php-core::validation.required'),
             'type.max'            => trans('php-core::validation.max'),
             'target.required'     => trans('php-core::validation.required'),

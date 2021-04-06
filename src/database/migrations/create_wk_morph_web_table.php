@@ -9,8 +9,8 @@ class CreateWkMorphWebTable extends Migration
     public function up()
     {
         Schema::create(config('wk-core.table.morph-web.webs'), function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->morphs('morph');
+            $table->uuid('id');
+            $table->uuidMorphs('morph');
             $table->string('type', 15);
             $table->string('serial')->nullable();
             $table->string('target', 10)->default('_blank');
@@ -21,6 +21,7 @@ class CreateWkMorphWebTable extends Migration
             $table->timestampsTz();
             $table->softDeletes();
 
+            $table->primary('id');
             $table->index(['morph_type', 'morph_id', 'type']);
             $table->index('type');
             $table->index('serial');
@@ -29,9 +30,9 @@ class CreateWkMorphWebTable extends Migration
         });
         if (!config('wk-morph-web.onoff.core-lang_core')) {
             Schema::create(config('wk-core.table.morph-web.webs_lang'), function (Blueprint $table) {
-                $table->bigIncrements('id');
-                $table->morphs('morph');
-                $table->unsignedBigInteger('user_id')->nullable();
+                $table->uuid('id');
+                $table->uuidMorphs('morph');
+                $table->uuid('user_id')->nullable();
                 $table->string('code');
                 $table->string('key');
                 $table->text('value')->nullable();
@@ -44,6 +45,8 @@ class CreateWkMorphWebTable extends Migration
                     ->on(config('wk-core.table.user'))
                     ->onDelete('set null')
                     ->onUpdate('cascade');
+
+                $table->primary('id');
             });
         }
     }
