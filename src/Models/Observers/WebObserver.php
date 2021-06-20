@@ -102,6 +102,10 @@ class WebObserver
      */
     public function deleted($entity)
     {
+        if (!config('wk-morph-web.soft_delete')) {
+            $entity->forceDelete();
+        }
+
         if ($entity->isForceDeleting()) {
             $entity->langs->withTrashed()->forceDelete();
         }
